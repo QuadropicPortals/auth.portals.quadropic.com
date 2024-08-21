@@ -34,14 +34,16 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        // no cors
-        mode: "no-cors",
         body: new URLSearchParams({
           id: username,
           name: displayName,
           email: email,
         }),
       });
+      if (!response.ok) {
+        setError("There's something wrong. Please try again later.");
+        return;
+      }
       router.replace("/register/confirm");
       // Handle the response
     } catch (error) {
