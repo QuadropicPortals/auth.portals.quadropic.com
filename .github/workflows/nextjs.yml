@@ -54,14 +54,13 @@ jobs:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Setup Pages
-        uses: actions/configure-pages@v4
-        # with:
-        #   static_site_generator: next
-        #   # Automatically inject basePath in your Next.js configuration file and disable
-        #   # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-        #   #
-        #   # You may remove this line if you want to manage the configuration yourself.
-
+        uses: actions/configure-pages@v5
+        #with:
+          # Automatically inject basePath in your Next.js configuration file and disable
+          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
+          #
+          # You may remove this line if you want to manage the configuration yourself.
+          #static_site_generator: next
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -76,8 +75,8 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
-      - name: Static HTML export with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+      - name: Syntax Correction
+        run: find ./out -type f -exec sed -i 's/\"\//\".\//g' {} +
       - name: Remove Jekyll Configurations by Adding .nojekyll to Out
         run: touch ./out/.nojekyll
       - name: Upload artifact
@@ -96,14 +95,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # Run Performance Analytics
-  perf:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Generate Lighthouse Report
-        uses: justinribeiro/lighthouse-action@master
-        with:
-          url: https://quadropic.com
-          wptConnectionSpeed: threegfast
