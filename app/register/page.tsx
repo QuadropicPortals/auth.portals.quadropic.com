@@ -45,7 +45,7 @@ export default function LoginPage() {
         setError("There's something wrong. Please try again later.");
         return;
       }
-      router.replace("/register/confirm?email=" + email);
+      router.replace("/register/confirm");
       // Handle the response
     } catch (error) {
       setError("There's something wrong. Please try again later.");
