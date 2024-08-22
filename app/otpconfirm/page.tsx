@@ -1,31 +1,51 @@
 "use client";
 
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FaFingerprint, FaAt, FaCircleExclamation } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { decode, JwtPayload } from "jsonwebtoken";
 
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-
 export default function ConfirmLoginPage() {
-  const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+  const [emailDeclarative, setEmailDeclarative] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    setIsMounted(true);
+    // This code only runs in the browser
+    const cookieValue = Cookies.get("tempAuthClient");
+
+    if (cookieValue) {
+      try {
+        const decoded = decode(cookieValue) as JwtPayload;
+        if (decoded && decoded.email) {
+          setEmailDeclarative(decoded.email);
+        } else {
+          setError("Invalid token: email not found");
+        }
+      } catch (err) {
+        setError("Failed to decode token");
+      }
+    } else {
+      setError("No authentication token found");
+    }
+
+    setIsLoading(false); // Mark as finished loading
   }, []);
 
-  const cookieValue = Cookies.get("tempAuthClient");
-  const emailDeclarative = (decode(cookieValue!) as JwtPayload).email;
-  const idDeclarative = (decode(cookieValue!) as JwtPayload).id;
-  const nameDecalrative = (decode(cookieValue!) as JwtPayload).name;
+  if (isLoading) {
+    // Display a loading state until the component is fully mounted and data is fetched
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="max-w-sm p-10 space-y-8">
+          <h2 className="text-3xl font-bold text-center text-red-500">Error</h2>
+          <p className="text-center text-red-400">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -37,20 +57,7 @@ export default function ConfirmLoginPage() {
           </p>
           <p className="text-center">{emailDeclarative}</p>
         </div>
-
-        <InputOTP maxLength={6}>
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-          </InputOTPGroup>
-          <InputOTPSeparator />
-          <InputOTPGroup>
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
+        {/* InputOTP component here */}
         <footer className="text-center">
           <p>Portals Auth by Quadropic</p>
           <p className="text-sm text-black/20 dark:text-white/20">
