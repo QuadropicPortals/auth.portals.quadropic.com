@@ -45,7 +45,7 @@ export default function LoginPage() {
         setError("There's something wrong. Please try again later.");
         return;
       }
-      router.replace("/otpconfirm");
+      router.replace("register/otpconfirm");
       // Handle the response
     } catch (error) {
       setError("There's something wrong. Please try again later.");
