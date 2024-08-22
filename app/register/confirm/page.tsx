@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FaFingerprint, FaAt, FaCircleExclamation } from "react-icons/fa6";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { decode, JwtPayload } from "jsonwebtoken";
@@ -16,16 +14,37 @@ import {
 
 export default function ConfirmLoginPage() {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+  const [emailDeclarative, setEmailDeclarative] = useState<string | null>(null);
+  const [idDeclarative, setIdDeclarative] = useState<string | null>(null);
+  const [nameDeclarative, setNameDeclarative] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    setIsMounted(true);
+    const cookieValue = Cookies.get("tempAuthClient");
+    if (cookieValue) {
+      try {
+        const decoded = decode(cookieValue) as JwtPayload;
+        setEmailDeclarative(decoded.email || null);
+        setIdDeclarative(decoded.id || null);
+        setNameDeclarative(decoded.name || null);
+      } catch (err) {
+        setError("Invalid token");
+      }
+    } else {
+      setError("No token found");
+    }
   }, []);
 
-  const cookieValue = Cookies.get("tempAuthClient");
-  const emailDeclarative = (decode(cookieValue!) as JwtPayload).email;
-  const idDeclarative = (decode(cookieValue!) as JwtPayload).id;
-  const nameDecalrative = (decode(cookieValue!) as JwtPayload).name;
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="max-w-sm p-10 space-y-8">
+          <h2 className="text-3xl font-bold text-center text-red-500">Error</h2>
+          <p className="text-center text-red-400">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
