@@ -22,3 +22,22 @@ export const registerUserStart = async (
 
   return response;
 };
+
+export const registerUserConfirm = async (otp: string): Promise<Response> => {
+  const response = await fetch("http://localhost:8080/register/complete", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      otp: otp,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error occured while confirming OTP");
+  }
+
+  return response;
+};
