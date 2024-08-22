@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -12,7 +12,7 @@ import {
   FaCircleExclamation,
 } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { loginPasskey } from "@/app/math/loginPasskey";
+import { registerUserStart } from "../math/registerUser";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,35 +22,6 @@ export default function LoginPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const registerUser = async (
-    username: string,
-    displayName: string,
-    email: string
-  ) => {
-    try {
-      const response = await fetch("http://localhost:8080/register/start", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          id: username,
-          name: displayName,
-          email: email,
-        }),
-      });
-      if (!response.ok) {
-        setError("There's something wrong. Please try again later.");
-        return;
-      }
-      router.replace("/otpconfirm");
-      // Handle the response
-    } catch (error) {
-      setError("There's something wrong. Please try again later.");
-    }
-  };
 
   const [formData, setFormData] = useState({
     username: "",
@@ -65,12 +36,18 @@ export default function LoginPage() {
     });
   };
 
-  // Remove the duplicate declaration of registerUser function
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
-    registerUser(formData.username, formData.displayName, formData.email);
+    try {
+      await registerUserStart(
+        formData.username,
+        formData.displayName,
+        formData.email
+      );
+      router.replace("/otpconfirm");
+    } catch (err) {
+      setError((err as Error).message);
+    }
   };
 
   return (
