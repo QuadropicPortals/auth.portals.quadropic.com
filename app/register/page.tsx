@@ -31,6 +31,7 @@ export default function LoginPage() {
     try {
       const response = await fetch("http://localhost:8080/register/start", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -44,7 +45,7 @@ export default function LoginPage() {
         setError("There's something wrong. Please try again later.");
         return;
       }
-      router.replace("/register/confirm");
+      router.replace("/register/confirm?email=" + email);
       // Handle the response
     } catch (error) {
       setError("There's something wrong. Please try again later.");
