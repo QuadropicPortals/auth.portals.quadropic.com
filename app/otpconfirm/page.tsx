@@ -13,6 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { FaCircleExclamation, FaUnlock } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { registerUserConfirm } from "../math/registerUser";
+import { useRouter } from "next/navigation";
 
 export default function ConfirmLoginPage() {
   const [emailDeclarative, setEmailDeclarative] = useState<string | null>(null);
@@ -20,6 +21,8 @@ export default function ConfirmLoginPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [globalOtp, setOTP] = useState<string>("");
+
+  const router = useRouter();
 
   useEffect(() => {
     // This code only runs in the browser
@@ -57,8 +60,15 @@ export default function ConfirmLoginPage() {
     }
   };
 
-  const handleOTPSubmit = () => {
-    registerUserConfirm(globalOtp);
+  const handleOTPSubmit = async () => {
+    try {
+      const res = await registerUserConfirm(globalOtp);
+      if (res.status === 200) {
+        router.replace("/regsetup");
+      }
+    } catch (error) {
+      setError("Failed to verify OTP");
+    }
   };
 
   return (

@@ -4,17 +4,20 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+//import { CalendarDatePicker } from "@/components/ui/datepicker";
+
 import {
-  FaPen,
-  FaAt,
-  FaEnvelope,
-  FaA,
+  FaBriefcase,
+  FaCircleCheck,
   FaCircleExclamation,
 } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { registerUserStart } from "../math/registerUser";
+import DatePicker from "@/components/ui/datepicker";
+import { GenderSelect } from "@/components/ui/gender";
+import { CountrySelect } from "@/components/ui/countryselect";
 
-export default function LoginPage() {
+export default function Page() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +25,11 @@ export default function LoginPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    from: new Date(new Date().getFullYear(), 0, 1),
+    to: new Date(),
+  });
 
   const [formData, setFormData] = useState({
     username: "",
@@ -39,14 +47,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await registerUserStart(
-        formData.username,
-        formData.displayName,
-        formData.email
-      );
-      if (res.status === 200) {
-        router.replace("/otpconfirm");
-      }
+      router.replace("/addPasskey");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -55,47 +56,33 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-sm p-10 space-y-8">
-        <h2 className="text-3xl font-bold text-center">Register an Account</h2>
+        <h2 className="text-3xl font-bold text-center">Almost Done!</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="relative">
-            <Input
-              type="text"
-              name="username"
-              placeholder="New Unique Username"
-              className="w-full border rounded-xl p-6 pl-12"
-              required
-              onChange={handleInputChange}
-            />
-            <FaAt className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
+          <div className="flex-row flex items-center space-x-4">
+            <p>Birthday</p> <DatePicker />
+          </div>
+          <div className="flex-row flex items-center space-x-4">
+            <p>Gender</p> <GenderSelect />
           </div>
           <div className="relative">
             <Input
               type="text"
-              name="displayName"
-              placeholder="Display Name"
+              name="role"
+              placeholder="Your Job, School, University"
               className="w-full border rounded-xl p-6 pl-12"
-              required
               onChange={handleInputChange}
             />
-            <FaA className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
+            <FaBriefcase className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
           </div>
-          <div className="relative">
-            <Input
-              type="text"
-              name="email"
-              placeholder="E-Mail Address"
-              className="w-full border rounded-xl p-6 pl-12"
-              required
-              onChange={handleInputChange}
-            />
-            <FaEnvelope className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
+          <div className="flex-row flex items-center space-x-4">
+            <p>Nationality</p> <CountrySelect />
           </div>
           <Button
             type="submit"
             className="w-full rounded-xl p-6 transition-colors"
           >
-            <FaPen className="mr-2" />
-            Continue Creating Account
+            <FaCircleCheck className="mr-2" />
+            Set it Up
           </Button>
         </form>
         {error && (
@@ -112,7 +99,7 @@ export default function LoginPage() {
         <footer className="text-center">
           <p>Portals Auth by Quadropic</p>
           <p className="text-sm text-black/20 dark:text-white/20">
-            Register a new account
+            Easy, isn't it?
           </p>
         </footer>
       </div>
