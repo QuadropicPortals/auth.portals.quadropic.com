@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input"; // Assuming your Input component is in the ui folder
+import { Input } from "@/components/ui/input";
 import { registerLocale } from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 import emojiFlags from "emoji-flags";
@@ -22,7 +22,11 @@ const countries = Object.entries(emojiFlags.data).map(([key, value]) => ({
   emoji: value.emoji,
 }));
 
-export function CountrySelect() {
+export function CountrySelect({
+  onChange,
+}: {
+  onChange: (value: any) => void;
+}) {
   const [searchTerm, setSearchTerm] = React.useState("");
 
   // Filter countries based on the search term
@@ -31,7 +35,7 @@ export function CountrySelect() {
   );
 
   return (
-    <Select>
+    <Select onValueChange={onChange}>
       <SelectTrigger className="w-[300px]">
         <SelectValue placeholder="Select a country" />
       </SelectTrigger>

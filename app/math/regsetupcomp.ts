@@ -1,11 +1,11 @@
 import { startRegistration } from "@simplewebauthn/browser";
 
-export const registerPasskey = async (
+export const regSetupCOmpl = async (
   setError: (error: string | null) => void
 ) => {
   try {
     const response = await fetch(
-      "https://portalsapi.quadropic.com/biometrics/rebuild",
+      "https://portalsapi.quadropic.com/register/setup",
       {
         method: "GET",
         credentials: "include",
@@ -16,24 +16,7 @@ export const registerPasskey = async (
     );
 
     if (response.ok) {
-      console.log("Passkey generated successfully", response.status);
-      const { options } = await response.json();
-      const authRes = await startRegistration({ ...options });
-
-      try {
-        await fetch("https://portalsapi.quadropic.com/biometrics/firstverify", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            cred: JSON.stringify(authRes),
-          }),
-        });
-      } catch (error) {
-        console.error("An error occurred");
-      }
+      console.log("Data Updated SUCCESSFULLY", response.status);
     } else {
       // Handle server-side errors
       if (response.status === 401) {

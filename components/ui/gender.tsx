@@ -8,12 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { FaMars, FaVenus } from "react-icons/fa6";
 
-export function GenderSelect() {
+export function GenderSelect({
+  onChange,
+}: {
+  onChange: (value: string) => void;
+}) {
   return (
-    <Select>
+    <Select onValueChange={onChange}>
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Your Gender" />
       </SelectTrigger>

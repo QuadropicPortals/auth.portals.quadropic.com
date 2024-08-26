@@ -2,17 +2,20 @@ export const passwordLogin = async (
   setError: (error: string | null) => void
 ) => {
   try {
-    const response = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        id: "alexf1",
-        password: "mypass",
-      }),
-    });
+    const response = await fetch(
+      "https://portalsapi.quadropic.com/auth/login",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          id: "alexf1",
+          password: "mypass",
+        }),
+      }
+    );
 
     if (response.ok) {
       console.log("Login successful", response.status);

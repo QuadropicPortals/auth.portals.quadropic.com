@@ -5,7 +5,7 @@ export const loginPasskey = async (
 ) => {
   try {
     const response = await fetch(
-      "http://localhost:8080/biometrics/getloginpasskey",
+      "https://portalsapi.quadropic.com/biometrics/getloginpasskey",
       {
         method: "POST",
         headers: {
@@ -22,16 +22,19 @@ export const loginPasskey = async (
       const { options } = await response.json();
       const authRes = await startAuthentication(options);
       try {
-        await fetch("http://localhost:8080/biometrics/verifyloginpasskey", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            userId: "alexf1",
-            cred: JSON.stringify(authRes),
-          }),
-        });
+        await fetch(
+          "https://portalsapi.quadropic.com/biometrics/verifyloginpasskey",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              userId: "alexf1",
+              cred: JSON.stringify(authRes),
+            }),
+          }
+        );
       } catch (error) {
         console.error("An error occurred");
       }

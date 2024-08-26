@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-//import { CalendarDatePicker } from "@/components/ui/datepicker";
-
 import {
   FaBriefcase,
   FaCircleCheck,
@@ -21,20 +19,17 @@ export default function Page() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    from: new Date(new Date().getFullYear(), 0, 1),
-    to: new Date(),
-  });
-
   const [formData, setFormData] = useState({
-    username: "",
-    displayName: "",
-    email: "",
+    about: "",
+    gender: "", // New state for gender
+    country: "", // New state for country
+    selectedDate: "", // New state for date
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +39,35 @@ export default function Page() {
     });
   };
 
+  const handleGenderChange = (gender: string) => {
+    setFormData({
+      ...formData,
+      gender,
+    });
+  };
+
+  const handleCountryChange = (country: string) => {
+    setFormData({
+      ...formData,
+      country,
+    });
+  };
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+    setFormData({
+      ...formData,
+      selectedDate: selectedDate?.toISOString()?.split("T")[0] || "",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Form Data:", formData);
     try {
-      router.replace("/addPasskey");
+      // Simulate the registration process or further actions
+      // Uncomment the following line if you wish to navigate to another page
+      // router.replace("/addPasskey");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -59,15 +79,17 @@ export default function Page() {
         <h2 className="text-3xl font-bold text-center">Almost Done!</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex-row flex items-center space-x-4">
-            <p>Birthday</p> <DatePicker />
+            <p>Birthday</p>
+            <DatePicker onDateChange={handleDateChange} />
           </div>
           <div className="flex-row flex items-center space-x-4">
-            <p>Gender</p> <GenderSelect />
+            <p>Gender</p>
+            <GenderSelect onChange={handleGenderChange} />
           </div>
           <div className="relative">
             <Input
               type="text"
-              name="role"
+              name="about"
               placeholder="Your Job, School, University"
               className="w-full border rounded-xl p-6 pl-12"
               onChange={handleInputChange}
@@ -75,7 +97,8 @@ export default function Page() {
             <FaBriefcase className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
           </div>
           <div className="flex-row flex items-center space-x-4">
-            <p>Nationality</p> <CountrySelect />
+            <p>Nationality</p>
+            <CountrySelect onChange={handleCountryChange} />
           </div>
           <Button
             type="submit"

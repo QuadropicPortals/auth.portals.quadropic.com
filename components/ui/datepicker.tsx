@@ -13,31 +13,43 @@ import {
 import { cn } from "@/lib/utils";
 import { FaCalendar as CalendarIcon } from "react-icons/fa6";
 
-export default function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+export default function DatePicker({
+  onDateChange,
+}: {
+  onDateChange: (date: Date) => void;
+}) {
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
+    undefined
+  );
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+    onDateChange(date);
+  };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
-          className={cn(
-            "w-[240px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
+          className={cn("w-[240px] justify-start text-left font-normal")}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          <span>
+            {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
+          onSelect={(selected: Date | undefined) => {
+            handleDateChange(selected as Date);
+          }}
           autoFocus
           startMonth={new Date(1950, 11)}
-          endMonth={new Date()}
+          required={false}
+          selected={selectedDate}
         />
       </PopoverContent>
     </Popover>
